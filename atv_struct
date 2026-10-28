@@ -1,0 +1,184 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+/* ===== Tipos de dados (Horario, Data, Compromisso) ===== */
+
+typedef struct {
+    int hora;
+    int minutos;
+    int segundos;
+} Horario;
+
+typedef struct {
+    int dia;
+    int mes;
+    int ano;
+} Data;
+
+typedef struct {
+    Data data;
+    Horario horario;
+    char texto[200];
+} Compromisso;
+
+/* ===== Exercicio 1: Pessoa ===== */
+
+typedef struct {
+    char nome[100];
+    int idade;
+    char endereco[150];
+} Pessoa;
+
+/* ===== Exercicio 2: Vetor em R3 ===== */
+
+struct Vetor {
+    double x;
+    double y;
+    double z;
+};
+
+struct Vetor soma(struct Vetor a, struct Vetor b) {
+    struct Vetor r;
+    r.x = a.x + b.x;
+    r.y = a.y + b.y;
+    r.z = a.z + b.z;
+    return r;
+}
+
+/* ===== Exercicio 3: Polar -> Cartesiano ===== */
+
+typedef struct {
+    double r;  /* raio */
+    double a;  /* argumento, em radianos */
+} Polar;
+
+typedef struct {
+    double x;
+    double y;
+} Cartesiano;
+
+/* ===== Funcoes auxiliares ===== */
+
+void limpar_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
+}
+
+void ler_linha(char *destino, size_t tamanho) {
+    fgets(destino, (int)tamanho, stdin);
+    destino[strcspn(destino, "\n")] = '\0';
+}
+
+/* ===== Funcoes de cada exercicio ===== */
+
+void exemplo_compromisso(void) {
+    Compromisso c;
+
+    printf("\n--- Compromisso ---\n");
+
+    printf("Data (dd mm aaaa): ");
+    scanf("%d %d %d", &c.data.dia, &c.data.mes, &c.data.ano);
+
+    printf("Horario (hh mm ss): ");
+    scanf("%d %d %d", &c.horario.hora, &c.horario.minutos, &c.horario.segundos);
+    limpar_buffer();
+
+    printf("Descricao: ");
+    ler_linha(c.texto, sizeof(c.texto));
+
+    printf("\nCompromisso: %s\n", c.texto);
+    printf("Data: %02d/%02d/%04d\n", c.data.dia, c.data.mes, c.data.ano);
+    printf("Horario: %02d:%02d:%02d\n",
+           c.horario.hora, c.horario.minutos, c.horario.segundos);
+}
+
+void exercicio1(void) {
+    Pessoa p;
+
+    printf("\n--- Exercicio 1: Pessoa ---\n");
+
+    printf("Nome: ");
+    ler_linha(p.nome, sizeof(p.nome));
+
+    printf("Idade: ");
+    scanf("%d", &p.idade);
+    limpar_buffer();
+
+    printf("Endereco: ");
+    ler_linha(p.endereco, sizeof(p.endereco));
+
+    printf("\n--- Dados armazenados ---\n");
+    printf("Nome: %s\n", p.nome);
+    printf("Idade: %d\n", p.idade);
+    printf("Endereco: %s\n", p.endereco);
+}
+
+void exercicio2(void) {
+    struct Vetor v1, v2, res;
+
+    printf("\n--- Exercicio 2: Soma de vetores ---\n");
+
+    printf("Vetor 1 (x y z): ");
+    scanf("%lf %lf %lf", &v1.x, &v1.y, &v1.z);
+
+    printf("Vetor 2 (x y z): ");
+    scanf("%lf %lf %lf", &v2.x, &v2.y, &v2.z);
+    limpar_buffer();
+
+    res = soma(v1, v2);
+
+    printf("Soma = (%.2f, %.2f, %.2f)\n", res.x, res.y, res.z);
+}
+
+void exercicio3(void) {
+    Polar p;
+    Cartesiano c;
+
+    printf("\n--- Exercicio 3: Polar para Cartesiano ---\n");
+
+    printf("Raio (r): ");
+    scanf("%lf", &p.r);
+
+    printf("Argumento (a) em radianos: ");
+    scanf("%lf", &p.a);
+    limpar_buffer();
+
+    c.x = p.r * cos(p.a);
+    c.y = p.r * sin(p.a);
+
+    printf("Polar: (r = %.2f, a = %.2f rad)\n", p.r, p.a);
+    printf("Cartesiano: (x = %.4f, y = %.4f)\n", c.x, c.y);
+}
+
+/* ===== Programa principal ===== */
+
+int main(void) {
+    int opcao;
+
+    do {
+        printf("\n===== MENU =====\n");
+        printf("0 - Tipos Horario, Data e Compromisso\n");
+        printf("1 - Ler dados de uma pessoa\n");
+        printf("2 - Soma de dois vetores em R3\n");
+        printf("3 - Polar para cartesiano\n");
+        printf("4 - Sair\n");
+        printf("Opcao: ");
+
+        if (scanf("%d", &opcao) != 1) {
+            break;
+        }
+        limpar_buffer();
+
+        switch (opcao) {
+            case 0: exemplo_compromisso(); break;
+            case 1: exercicio1();          break;
+            case 2: exercicio2();          break;
+            case 3: exercicio3();          break;
+            case 4: printf("Encerrando...\n"); break;
+            default: printf("Opcao invalida.\n");
+        }
+    } while (opcao != 4);
+
+    return 0;
+}
